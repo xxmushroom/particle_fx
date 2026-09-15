@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import '../core/particle.dart';
+import '../core/particle_force_state.dart';
 import 'particle_force.dart';
 
 /// Applies constant downward acceleration to particles.
@@ -20,7 +20,7 @@ class GravityForce extends ParticleForce {
 
   @override
   void apply(
-      Particle particle,
+      ParticleForceState particle,
       double deltaTime,
       Size canvasSize,
       ) {

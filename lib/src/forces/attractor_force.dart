@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../core/particle.dart';
+import '../core/particle_force_state.dart';
 import 'force_falloff.dart';
 import 'particle_force.dart';
 import 'particle_force_target.dart';
@@ -53,7 +53,7 @@ class AttractorForce extends ParticleForce {
 
   @override
   void apply(
-      Particle particle,
+      ParticleForceState particle,
       double deltaTime,
       Size canvasSize,
       ) {

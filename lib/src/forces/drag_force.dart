@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
-import '../core/particle.dart';
+import '../core/particle_force_state.dart';
 import 'particle_force.dart';
 
 /// Gradually reduces particle velocity.
@@ -27,7 +27,7 @@ class DragForce extends ParticleForce {
 
   @override
   void apply(
-      Particle particle,
+      ParticleForceState particle,
       double deltaTime,
       Size canvasSize,
       ) {

@@ -2,6 +2,7 @@ export 'src/config/particle_burst_config.dart';
 export 'src/config/particle_spawn_config.dart';
 export 'src/config/particle_stream_config.dart';
 export 'src/controllers/particle_fx_controller.dart';
+export 'src/core/particle_force_state.dart';
 export 'src/core/particle_range.dart';
 export 'src/forces/particle_force_target_controller.dart';
 

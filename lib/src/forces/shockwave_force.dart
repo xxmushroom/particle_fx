@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../core/particle.dart';
+import '../core/particle_force_state.dart';
 import 'particle_force.dart';
 import 'particle_force_target.dart';
 
@@ -55,7 +55,7 @@ class ShockwaveForce extends ParticleForce {
 
   @override
   void apply(
-      Particle particle,
+      ParticleForceState particle,
       double deltaTime,
       Size canvasSize,
       ) {

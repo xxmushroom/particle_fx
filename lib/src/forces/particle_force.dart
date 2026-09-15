@@ -1,10 +1,14 @@
 import 'dart:ui';
 
-import '../core/particle.dart';
+import '../core/particle_force_state.dart';
 
 /// Base class for forces that can influence particle motion.
 ///
-/// A force modifies a particle's velocity during each simulation step.
+/// A force is evaluated during each simulation step and may inspect or modify
+/// the public [ParticleForceState] supplied by the particle engine.
+///
+/// Custom forces can extend this class without depending on internal
+/// `particle_fx` implementation types.
 abstract class ParticleForce {
   /// Creates a particle force.
   const ParticleForce();
@@ -14,9 +18,9 @@ abstract class ParticleForce {
   /// [deltaTime] is measured in seconds.
   ///
   /// [canvasSize] is the current size of the particle canvas and allows
-  /// forces such as attractors and vortices to use relative positions.
+  /// positional forces to work relative to the available drawing area.
   void apply(
-      Particle particle,
+      ParticleForceState particle,
       double deltaTime,
       Size canvasSize,
       );

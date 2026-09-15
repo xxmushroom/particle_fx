@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import '../core/particle.dart';
+import '../core/particle_force_state.dart';
 import 'particle_force.dart';
 
 /// Applies constant directional acceleration to particles.
@@ -22,7 +22,7 @@ class WindForce extends ParticleForce {
 
   @override
   void apply(
-      Particle particle,
+      ParticleForceState particle,
       double deltaTime,
       Size canvasSize,
       ) {
