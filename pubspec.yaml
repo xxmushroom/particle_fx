@@ -1,6 +1,6 @@
 name: particle_fx
 description: A high-performance Flutter particle effects engine for image particles, emitters, forces, trails, presets, weighted textures, and layered effects.
-version: 0.1.1
+version: 0.1.2
 repository: https://github.com/xxmushroom/particle_fx
 issue_tracker: https://github.com/xxmushroom/particle_fx/issues
 

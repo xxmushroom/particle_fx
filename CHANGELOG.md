@@ -1,3 +1,10 @@
+## 0.1.2
+
+### Fixed
+
+- Fixed the animated showcase image not rendering on pub.dev by using an absolute GitHub-hosted image URL.
+- Excluded the showcase GIF from the published package archive to reduce package size.
+
 ## 0.1.1
 
 ### Changed

@@ -17,7 +17,7 @@ Particles are lightweight Dart objects simulated by an internal engine and rende
 
 <p align="center">
   <img
-    src="doc/demo/particle_fx_showcase.gif"
+    src="https://raw.githubusercontent.com/xxmushroom/particle_fx/main/doc/demo/particle_fx_showcase.gif"
     alt="particle_fx Flutter particle effects showcase"
     width="480"
   />

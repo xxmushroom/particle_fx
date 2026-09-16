@@ -1,0 +1,13 @@
+# Generated Flutter/Dart output
+build/
+.dart_tool/
+
+# Generated API documentation
+doc/api/
+
+# IDE files
+.idea/
+*.iml
+
+# README showcase is hosted from GitHub instead
+doc/demo/particle_fx_showcase.gif
