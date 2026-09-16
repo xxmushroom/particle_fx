@@ -1,3 +1,14 @@
+## 0.1.1
+
+### Changed
+
+- Improved the README with package badges, a visual showcase, and a clearer quick-start guide.
+- Added an animated particle effects showcase.
+- Added bundled particle artwork to the example application for fire, snow, smoke, sparks, fireworks, confetti, rain, bubbles, magic, galaxy, hearts, and leaves.
+- Updated the example playground to automatically use matching textures with built-in presets.
+- Added quick showcase textures for hearts and leaves while preserving custom texture selection.
+- Improved the example experience for demonstrating particle presets and custom effects.
+
 ## 0.1.0
 
 Initial public release of `particle_fx`.
