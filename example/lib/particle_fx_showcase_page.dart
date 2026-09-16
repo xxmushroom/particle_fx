@@ -223,6 +223,49 @@ on ShowcasePreset {
     }
   }
 
+  String? get assetPath {
+    switch (this) {
+      case ShowcasePreset.custom:
+        return null;
+
+      case ShowcasePreset.fire:
+        return 'assets/particles/fire.png';
+
+      case ShowcasePreset.snow:
+        return 'assets/particles/snow.png';
+
+      case ShowcasePreset.confetti:
+        return 'assets/particles/confetti.png';
+
+      case ShowcasePreset.magic:
+        return 'assets/particles/magic.png';
+
+      case ShowcasePreset.smoke:
+        return 'assets/particles/smoke.png';
+
+      case ShowcasePreset.sparks:
+        return 'assets/particles/sparks.png';
+
+      case ShowcasePreset.fireworks:
+        return 'assets/particles/fireworks.png';
+
+      case ShowcasePreset.fountain:
+        return 'assets/particles/sparks.png';
+
+      case ShowcasePreset.rain:
+        return 'assets/particles/rain.png';
+
+      case ShowcasePreset.galaxy:
+        return 'assets/particles/galaxy.png';
+
+      case ShowcasePreset.explosion:
+        return 'assets/particles/fireworks.png';
+
+      case ShowcasePreset.bubbles:
+        return 'assets/particles/bubbles.png';
+    }
+  }
+
   ParticlePreset? get preset {
     switch (this) {
       case ShowcasePreset.custom:
@@ -651,8 +694,15 @@ class _ParticleFxShowcasePageState extends State<ParticleFxShowcasePage> {
   Offset? _pointerPosition;
   final ImagePicker _imagePicker =
   ImagePicker();
-  final List<ParticleTexture> _ownedTextures = <ParticleTexture>[];
-  final List<_ShowcaseTextureEntry> _weightedTextures = <_ShowcaseTextureEntry>[];
+  final List<ParticleTexture> _ownedTextures =
+  <ParticleTexture>[];
+
+  final Map<String, _ShowcaseTextureEntry>
+  _assetTextures =
+  <String, _ShowcaseTextureEntry>{};
+
+  final List<_ShowcaseTextureEntry> _weightedTextures =
+  <_ShowcaseTextureEntry>[];
   ShowcaseTextureMode _textureMode = ShowcaseTextureMode.single;
   ParticleTexture? _selectedTexture;
   Uint8List? _selectedImageBytes;
@@ -2102,9 +2152,9 @@ $forcesArgument
   ParticlePreset? get _activePreset =>
       _selectedPreset.preset;
 
-  void _selectPreset(
+  Future<void> _selectPreset(
       ShowcasePreset preset,
-      ) {
+      ) async {
     _controller.stop();
 
     setState(() {
@@ -2175,6 +2225,10 @@ $forcesArgument
           _particlesPerSecond = 45;
       }
     });
+
+    await _loadPresetTexture(
+      preset,
+    );
   }
   bool get _isContinuous =>
       _emissionMode ==
@@ -2320,6 +2374,171 @@ $forcesArgument
     setState(() {
       _pointerPosition = position;
     });
+  }
+  Future<_ShowcaseTextureEntry> _loadAssetTexture(
+      String assetPath,
+      ) async {
+    final _ShowcaseTextureEntry? cachedEntry =
+    _assetTextures[assetPath];
+
+    if (cachedEntry != null) {
+      return cachedEntry;
+    }
+
+    final ByteData data =
+    await rootBundle.load(
+      assetPath,
+    );
+
+    final Uint8List bytes =
+    data.buffer.asUint8List(
+      data.offsetInBytes,
+      data.lengthInBytes,
+    );
+
+    final ParticleTexture texture =
+    await ParticleTexture.fromBytes(
+      bytes,
+    );
+
+    if (!mounted) {
+      texture.dispose();
+
+      throw StateError(
+        'Showcase was disposed while loading $assetPath.',
+      );
+    }
+
+    final _ShowcaseTextureEntry entry =
+    _ShowcaseTextureEntry(
+      texture: texture,
+      bytes: bytes,
+    );
+
+    _ownedTextures.add(
+      texture,
+    );
+
+    _assetTextures[assetPath] =
+        entry;
+
+    return entry;
+  }
+  Future<void> _loadPresetTexture(
+      ShowcasePreset preset,
+      ) async {
+    final String? assetPath =
+        preset.assetPath;
+
+    if (assetPath == null) {
+      return;
+    }
+
+    if (mounted) {
+      setState(() {
+        _loadingImage = true;
+      });
+    }
+
+    try {
+      final _ShowcaseTextureEntry entry =
+      await _loadAssetTexture(
+        assetPath,
+      );
+
+      if (!mounted ||
+          _selectedPreset != preset) {
+        return;
+      }
+
+      setState(() {
+        _textureMode =
+            ShowcaseTextureMode.single;
+
+        _selectedTexture =
+            entry.texture;
+
+        _selectedImageBytes =
+            entry.bytes;
+      });
+    } catch (error) {
+      if (!mounted ||
+          _selectedPreset != preset) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+        SnackBar(
+          content: Text(
+            'Could not load preset image: $error',
+          ),
+        ),
+      );
+    } finally {
+      if (mounted &&
+          _selectedPreset == preset) {
+        setState(() {
+          _loadingImage = false;
+        });
+      }
+    }
+  }
+  Future<void> _loadShowcaseTexture(
+      String assetPath,
+      ) async {
+    if (_loadingImage) {
+      return;
+    }
+
+    if (_controller.isStreaming) {
+      _controller.stop();
+    }
+
+    setState(() {
+      _loadingImage = true;
+    });
+
+    try {
+      final _ShowcaseTextureEntry entry =
+      await _loadAssetTexture(
+        assetPath,
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _textureMode =
+            ShowcaseTextureMode.single;
+
+        _selectedTexture =
+            entry.texture;
+
+        _selectedImageBytes =
+            entry.bytes;
+      });
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+        SnackBar(
+          content: Text(
+            'Could not load showcase image: $error',
+          ),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _loadingImage = false;
+        });
+      }
+    }
   }
   Future<void> _pickImage() async {
     if (_loadingImage) {
@@ -5333,6 +5552,69 @@ $forcesArgument
           _buildSingleImageSelector()
         else
           _buildWeightedImageSelector(),
+
+        const SizedBox(height: 16),
+
+        const Text(
+          'Quick showcase textures',
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            ActionChip(
+              avatar: const Icon(
+                Icons.favorite,
+                size: 18,
+              ),
+              label: const Text(
+                'Hearts',
+              ),
+              onPressed: _loadingImage
+                  ? null
+                  : () {
+                _loadShowcaseTexture(
+                  'assets/particles/hearts.png',
+                );
+              },
+            ),
+            ActionChip(
+              avatar: const Icon(
+                Icons.eco,
+                size: 18,
+              ),
+              label: const Text(
+                'Leaves',
+              ),
+              onPressed: _loadingImage
+                  ? null
+                  : () {
+                _loadShowcaseTexture(
+                  'assets/particles/leaves.png',
+                );
+              },
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 6),
+
+        Text(
+          'Use these images with any preset or custom effect.',
+          style: TextStyle(
+            fontSize: 12,
+            color: Theme.of(context)
+                .colorScheme
+                .onSurfaceVariant,
+          ),
+        ),
       ],
     );
   }

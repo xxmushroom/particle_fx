@@ -1,10 +1,34 @@
 # particle_fx
 
-A high-performance, extensible Flutter particle effects engine for building image-based particle systems with custom emitters, forces, trails, color transitions, weighted textures, reusable presets, timed streams, layered composite effects, lifecycle callbacks, and live performance statistics.
+[![Pub Version](https://img.shields.io/pub/v/particle_fx)](https://pub.dev/packages/particle_fx)
+[![Pub Points](https://img.shields.io/pub/points/particle_fx)](https://pub.dev/packages/particle_fx/score)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![GitHub](https://img.shields.io/badge/GitHub-xxmushroom%2Fparticle__fx-181717?logo=github)](https://github.com/xxmushroom/particle_fx)
 
-`particle_fx` is designed for developers who want more control than a simple "confetti widget" while still keeping the rendering architecture lightweight and Flutter-friendly.
+A high-performance, extensible particle effects engine for Flutter.
 
-Particles are represented as lightweight Dart objects and rendered together on a single `CustomPainter` canvas instead of creating one Flutter widget per particle.
+Build fire, smoke, snow, rain, sparks, fireworks, explosions, trails, vortex effects, interactive particle fields, and layered effects using your own image textures.
+
+`particle_fx` is designed for developers who need more control than a simple confetti widget without paying the cost of a widget-per-particle architecture.
+
+Particles are lightweight Dart objects simulated by an internal engine and rendered together through a single `CustomPainter`.
+
+## Showcase
+
+![particle_fx Flutter particle effects showcase](doc/demo/particle_fx_showcase.gif)
+
+### Why particle_fx?
+
+- **High-performance rendering** — thousands of particles can share a single canvas and decoded image textures.
+- **Flexible emission** — bursts, continuous streams, timed streams, looping streams, and layered composite effects.
+- **Extensible physics** — built-in forces plus a public API for implementing custom particle forces.
+- **Rich appearance control** — lifetime opacity, scale, color, rotation, blend modes, trails, and weighted textures.
+- **Reusable effects** — built-in presets and customizable `ParticlePreset` configurations.
+- **Developer tooling** — live particle statistics, capacity monitoring, dropped-particle counts, FPS, and estimated draw calls.
+
+**pub.dev:** [pub.dev/packages/particle_fx](https://pub.dev/packages/particle_fx)  
+**GitHub:** [github.com/xxmushroom/particle_fx](https://github.com/xxmushroom/particle_fx)  
+**API documentation:** [pub.dev/documentation/particle_fx/latest](https://pub.dev/documentation/particle_fx/latest/)
 
 ---
 
@@ -285,20 +309,32 @@ import 'package:particle_fx/particle_fx.dart';
 
 # Quick start
 
-A particle system needs three main things:
+A particle effect needs three things:
 
 1. a `ParticleFxController`
-2. a `ParticleFx` widget
-3. a `ParticleTexture`
+2. a `ParticleFx` canvas
+3. a decoded `ParticleTexture`
 
-Create the controller:
+Import the package:
+
+```
+import 'package:particle_fx/particle_fx.dart';
+```
+
+## 1. Create a controller
+
+Create the controller once in your widget state:
 
 ```
 final ParticleFxController controller =
     ParticleFxController();
 ```
 
-Place the particle canvas in your widget tree:
+## 2. Add the particle canvas
+
+Place `ParticleFx` anywhere in your widget tree.
+
+It automatically fills the available space:
 
 ```
 ParticleFx(
@@ -306,16 +342,62 @@ ParticleFx(
 )
 ```
 
-Load a texture:
+For example, it can be placed above your interface inside a `Stack`:
+```
+Stack(
+  children: [
+    const YourContent(),
+
+    Positioned.fill(
+      child: IgnorePointer(
+        child: ParticleFx(
+          controller: controller,
+        ),
+      ),
+    ),
+  ],
+)
+```
+
+`IgnorePointer` is optional, but useful when particles are purely visual and
+should not block taps on the UI underneath.
+
+## 3. Load a particle texture
+
+`particle_fx` renders image-based particles.
+
+Decode the image once and reuse the resulting `ParticleTexture`:
 
 ```
+final ByteData data =
+    await rootBundle.load(
+  'assets/particle.png',
+);
+
+final Uint8List bytes =
+    data.buffer.asUint8List(
+  data.offsetInBytes,
+  data.lengthInBytes,
+);
+
 final ParticleTexture texture =
     await ParticleTexture.fromBytes(
-  imageBytes,
+  bytes,
 );
 ```
 
-Emit particles:
+This example requires:
+
+```
+import 'dart:typed_data';
+
+import 'package:flutter/services.dart';
+import 'package:particle_fx/particle_fx.dart';
+```
+
+## 4. Emit particles
+
+Trigger a burst from anywhere that has access to the controller:
 
 ```
 controller.burst(
@@ -326,7 +408,27 @@ controller.burst(
 );
 ```
 
-That is the minimum setup.
+That's enough to create your first particle effect.
+
+From there you can add emitters, forces, trails, lifetime animations,
+multiple textures, presets, timed streams, or composite effects without
+changing the rendering architecture.
+
+### Using a built-in preset
+
+You can also use one of the built-in presets as a starting point:
+
+```
+controller.burst(
+  ParticlePresets.fireworks.burst(
+    texture: texture,
+    count: 200,
+  ),
+);
+```
+
+Presets remain fully customizable, so they can be copied and adjusted instead
+of forcing you into a fixed visual style.
 
 ---
 
