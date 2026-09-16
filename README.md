@@ -16,11 +16,26 @@ Particles are lightweight Dart objects simulated by an internal engine and rende
 ## Showcase
 
 <p align="center">
+  <a href="https://xxmushroom.github.io/particle_fx/">
+    <img
+      src="https://img.shields.io/badge/✨_Try_the_Live_Playground-6B8E5A?style=for-the-badge"
+      alt="Try particle_fx live"
+    />
+  </a>
+</p>
+
+<p align="center">
   <img
     src="https://raw.githubusercontent.com/xxmushroom/particle_fx/main/doc/demo/particle_fx_showcase.gif"
     alt="particle_fx Flutter particle effects showcase"
     width="480"
   />
+</p>
+
+<p align="center">
+  <a href="https://xxmushroom.github.io/particle_fx/">
+    <b>Open the interactive playground in your browser →</b>
+  </a>
 </p>
 
 ### Why particle_fx?
